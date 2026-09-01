@@ -1,0 +1,309 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+Cart | AMLO Shoe Store
+{% endblock %}
+
+
+{% block content %}
+
+<section class="page-header">
+    <h1>Your Cart</h1>
+
+    <p>
+        Review your selected shoes before sending your enquiry to AMLO.
+    </p>
+</section>
+
+
+<main class="cart-layout">
+
+    <section>
+        <div id="cartItems"></div>
+    </section>
+
+
+    <aside
+        class="summary"
+        id="cartSummary"
+    >
+
+        <h2>
+            Order Enquiry
+        </h2>
+
+
+        <div class="total-row">
+
+            <span>
+                Estimated Total
+            </span>
+
+            <span>
+                R <span id="cartTotal">0.00</span>
+            </span>
+
+        </div>
+
+
+        <a
+            href="#"
+            class="whatsapp-btn"
+            onclick="sendWhatsAppEnquiry(); return false;"
+        >
+            Send Enquiry on WhatsApp
+        </a>
+
+
+        <a
+            href="{% url 'home' %}#shop"
+            class="continue-shopping"
+        >
+            Continue Shopping
+        </a>
+
+
+        <p class="note">
+            Stock, delivery and payment details are confirmed directly
+            with AMLO after your WhatsApp enquiry is sent.
+        </p>
+
+    </aside>
+
+</main>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+    function loadCart() {
+
+        const cart = JSON.parse(
+            localStorage.getItem('amloCart')
+        ) || [];
+
+
+        const cartItems =
+            document.getElementById('cartItems');
+
+
+        const cartSummary =
+            document.getElementById('cartSummary');
+
+
+        cartItems.innerHTML = '';
+
+
+        if (cart.length === 0) {
+
+    cartItems.innerHTML = `
+        <div class="empty-cart">
+
+            <p>
+                Your cart is empty.
+            </p>
+
+            <a
+                href="{% url 'home' %}#shop"
+                class="continue-shopping"
+            >
+                Continue Shopping
+            </a>
+
+        </div>
+    `;
+
+    cartSummary.style.display = 'none';
+
+    return;
+}
+
+
+        cartSummary.style.display = 'block';
+
+
+        let total = 0;
+
+
+        cart.forEach((item, index) => {
+
+            const itemTotal =
+                item.price * item.quantity;
+
+
+            total += itemTotal;
+
+
+            cartItems.innerHTML += `
+                <div class="cart-item">
+
+                    <div>
+
+                        <h3>
+                            ${item.name}
+                        </h3>
+
+                        <p>
+                            Size: ${item.size}
+                        </p>
+
+                        <p>
+                            Colour: ${item.colour}
+                        </p>
+
+                        <p>
+                            Quantity: ${item.quantity}
+                        </p>
+
+                        <p>
+                            Price: R ${item.price.toFixed(2)}
+                        </p>
+
+                        <p>
+                            <strong>
+                                Subtotal:
+                                R ${itemTotal.toFixed(2)}
+                            </strong>
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <button
+                            class="remove-btn"
+                            onclick="removeItem(${index})"
+                        >
+                            Remove
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+
+        document.getElementById(
+            'cartTotal'
+        ).textContent = total.toFixed(2);
+    }
+
+
+
+    function removeItem(index) {
+
+        let cart = JSON.parse(
+            localStorage.getItem('amloCart')
+        ) || [];
+
+
+        cart.splice(index, 1);
+
+
+        localStorage.setItem(
+            'amloCart',
+            JSON.stringify(cart)
+        );
+
+
+        loadCart();
+    }
+
+
+
+    function sendWhatsAppEnquiry() {
+
+        const cart = JSON.parse(
+            localStorage.getItem('amloCart')
+        ) || [];
+
+
+        if (cart.length === 0) {
+
+            alert('Your cart is empty.');
+
+            return;
+        }
+
+
+        let message =
+            `Hi AMLO Shoe Store\n\n`;
+
+
+        message +=
+            `I would like to enquire about the following:\n\n`;
+
+
+        let total = 0;
+
+
+        cart.forEach((item, index) => {
+
+            const itemTotal =
+                item.price * item.quantity;
+
+
+            total += itemTotal;
+
+
+            message +=
+                `${index + 1}. ${item.name}\n`;
+
+
+            message +=
+                `Size: ${item.size}\n`;
+
+
+            message +=
+                `Colour: ${item.colour}\n`;
+
+
+            message +=
+                `Quantity: ${item.quantity}\n`;
+
+
+            message +=
+                `Price: R${item.price.toFixed(2)}\n`;
+
+
+            message +=
+                `Subtotal: R${itemTotal.toFixed(2)}\n\n`;
+
+        });
+
+
+        message +=
+            `Estimated Total: R${total.toFixed(2)}\n\n`;
+
+
+        message +=
+            `Please confirm availability and delivery details.`;
+
+
+
+        const phoneNumber = "27810680632";
+
+
+        const whatsappURL =
+            `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+
+        window.open(
+            whatsappURL,
+            '_blank'
+        );
+    }
+
+
+
+    loadCart();
+
+</script>
+
+{% endblock %}

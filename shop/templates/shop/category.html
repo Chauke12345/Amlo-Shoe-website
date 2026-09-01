@@ -1,0 +1,76 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+{{ category.name }} | AMLO Shoe Store
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+
+    <span>
+        AMLO Collection
+    </span>
+
+    <h1>
+        {{ category.name }}
+    </h1>
+
+</section>
+
+<section class="products">
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+            <div class="product-card">
+
+                <a
+                    href="{% url 'product_detail' product.slug %}"
+                    class="product-image"
+                >
+
+                    {% if product.images.first %}
+                        <img
+                            src="{{ product.images.first.image.url }}"
+                            alt="{{ product.name }}"
+                        >
+                    {% endif %}
+
+                </a>
+
+                <div class="product-info">
+
+                    <h3>
+                        {{ product.name }}
+                    </h3>
+
+                    <div class="price">
+                        R {{ product.price }}
+                    </div>
+
+                    <a
+                        href="{% url 'product_detail' product.slug %}"
+                        class="view-btn"
+                    >
+                        View Product
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="empty">
+                No products are available in this category yet.
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

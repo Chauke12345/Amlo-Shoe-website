@@ -1,0 +1,341 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+AMLO Shoe Store
+{% endblock %}
+
+
+{% block content %}
+
+<!-- =========================
+     HERO
+========================= -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-tag">
+            New Season
+        </div>
+
+        <h1>
+            Shoes Made To Be Seen
+        </h1>
+
+        <p>
+            Discover stylish footwear for every step.
+            Browse AMLO's latest arrivals and send your
+            order enquiry directly through WhatsApp.
+        </p>
+
+        <a
+            href="#shop"
+            class="hero-btn"
+        >
+            Shop The Collection
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SHOP BY CATEGORY
+========================= -->
+<section class="section">
+
+    <div class="section-heading">
+
+        <span>
+            Shop By Category
+        </span>
+
+        <h2>
+            Find Your Perfect Pair
+        </h2>
+
+    </div>
+
+
+    <div class="category-grid">
+
+        <!-- WOMEN -->
+        <a
+            href="{% url 'category_products' 'women' %}"
+            class="category-card"
+        >
+
+            {% if women_category and women_category.image %}
+                <img
+                    src="{{ women_category.image.url }}"
+                    alt="Women's Shoes"
+                    class="category-image"
+                >
+            {% endif %}
+
+            <div class="category-content">
+
+                <h3>
+                    Women's Shoes
+                </h3>
+
+                <span>
+                    Shop Collection →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- MEN -->
+        <a
+            href="{% url 'category_products' 'men' %}"
+            class="category-card"
+        >
+
+            {% if men_category and men_category.image %}
+                <img
+                    src="{{ men_category.image.url }}"
+                    alt="Men's Shoes"
+                    class="category-image"
+                >
+            {% endif %}
+
+            <div class="category-content">
+
+                <h3>
+                    Men's Shoes
+                </h3>
+
+                <span>
+                    Shop Collection →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- KIDS -->
+        <a
+            href="{% url 'category_products' 'kids' %}"
+            class="category-card"
+        >
+
+            {% if kids_category and kids_category.image %}
+                <img
+                    src="{{ kids_category.image.url }}"
+                    alt="Kids Shoes"
+                    class="category-image"
+                >
+            {% endif %}
+
+            <div class="category-content">
+
+                <h3>
+                    Kids
+                </h3>
+
+                <span>
+                    Shop Collection →
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- NEW ARRIVALS CATEGORY CARD -->
+        <a
+            href="#shop"
+            class="category-card"
+        >
+
+            {% if new_arrival and new_arrival.images.first %}
+                <img
+                    src="{{ new_arrival.images.first.image.url }}"
+                    alt="New Arrivals"
+                    class="category-image"
+                >
+            {% endif %}
+
+            <div class="category-content">
+
+                <h3>
+                    New Arrivals
+                </h3>
+
+                <span>
+                    Shop Collection →
+                </span>
+
+            </div>
+
+        </a>
+
+    </div>
+    <!-- END CATEGORY GRID -->
+
+</section>
+<!-- END SHOP BY CATEGORY -->
+
+
+<!-- =========================
+     NEW ARRIVALS PRODUCTS
+========================= -->
+<section
+    class="section new-arrivals-section"
+    id="shop"
+>
+
+    <div class="section-heading">
+
+        <span>
+            Fresh Styles
+        </span>
+
+        <h2>
+            New Arrivals
+        </h2>
+
+        <p class="section-description">
+            Discover some of AMLO's latest footwear.
+        </p>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        {% for product in products|slice:":4" %}
+
+            <div class="product-card">
+
+                <a
+                    href="{% url 'product_detail' product.slug %}"
+                    class="product-image"
+                >
+
+                    {% if product.images.first %}
+
+                        <img
+                            src="{{ product.images.first.image.url }}"
+                            alt="{{ product.name }}"
+                            loading="lazy"
+                        >
+
+                    {% endif %}
+
+
+                    {% if product.new_arrival %}
+
+                        <div class="badge">
+                            New
+                        </div>
+
+                    {% endif %}
+
+                </a>
+
+
+                <div class="product-card-info">
+
+                    <h3>
+                        {{ product.name }}
+                    </h3>
+
+                    <div class="price">
+                        R {{ product.price }}
+                    </div>
+
+                    <a
+                        href="{% url 'product_detail' product.slug %}"
+                        class="view-btn"
+                    >
+                        View Product
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="empty">
+                No products available yet.
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <div class="view-all-wrap">
+
+        <a
+            href="#shop"
+            class="view-all-btn"
+        >
+            View All Shoes
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     WHY AMLO
+========================= -->
+<section class="why-amlo">
+
+    <div class="why-grid">
+
+        <div class="why-item">
+
+            <h3>
+                Stylish Footwear
+            </h3>
+
+            <p>
+                Carefully selected styles for everyday wear,
+                special occasions and everything in between.
+            </p>
+
+        </div>
+
+
+        <div class="why-item">
+
+            <h3>
+                Easy WhatsApp Ordering
+            </h3>
+
+            <p>
+                Add your favourite shoes to your cart and send
+                your complete enquiry directly to AMLO.
+            </p>
+
+        </div>
+
+
+        <div class="why-item">
+
+            <h3>
+                Personal Service
+            </h3>
+
+            <p>
+                Confirm stock, delivery and payment directly
+                with the AMLO team.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

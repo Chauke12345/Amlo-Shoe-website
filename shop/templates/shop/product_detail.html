@@ -1,0 +1,331 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+{{ product.name }} | AMLO Shoe Store
+{% endblock %}
+
+
+{% block content %}
+
+<div class="breadcrumb">
+    <a href="{% url 'home' %}">Home</a>
+    /
+    {{ product.name }}
+</div>
+
+
+<main class="product-container">
+
+    <!-- PRODUCT IMAGES -->
+    <section class="gallery">
+
+        <div class="main-image">
+
+            {% if product.images.first %}
+                <img
+                    id="mainProductImage"
+                    src="{{ product.images.first.image.url }}"
+                    alt="{{ product.name }}"
+                >
+            {% endif %}
+
+        </div>
+
+
+        <div class="thumbnail-grid">
+
+            {% for image in product.images.all %}
+
+                <button
+                    type="button"
+                    class="thumbnail"
+                    onclick="changeImage('{{ image.image.url }}')"
+                >
+                    <img
+                        src="{{ image.image.url }}"
+                        alt="{{ product.name }}"
+                    >
+                </button>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- PRODUCT INFORMATION -->
+    <section class="product-info">
+
+        {% if product.new_arrival %}
+            <div class="product-tag">
+                New Arrival
+            </div>
+        {% endif %}
+
+
+        <h1>
+            {{ product.name }}
+        </h1>
+
+
+        <div class="price">
+            R {{ product.price }}
+        </div>
+
+
+        <div class="availability">
+
+            {% if product.available %}
+                Available for enquiry
+            {% else %}
+                Currently unavailable
+            {% endif %}
+
+        </div>
+
+
+        <!-- SIZE -->
+        <div class="option-group">
+
+            <label for="size">
+                Size
+            </label>
+
+            <select id="size">
+
+                <option value="">
+                    Select your size
+                </option>
+
+                {% for size in product.sizes.all %}
+
+                    {% if size.available %}
+                        <option value="{{ size.size }}">
+                            Size {{ size.size }}
+                        </option>
+                    {% endif %}
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- COLOUR -->
+        <div class="option-group">
+
+            <label for="colour">
+                Colour
+            </label>
+
+            <select id="colour">
+
+                <option value="">
+                    Select colour
+                </option>
+
+                {% for colour in product.colours.all %}
+                    <option value="{{ colour.name }}">
+                        {{ colour.name }}
+                    </option>
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- QUANTITY -->
+        <div class="option-group">
+
+            <label for="quantity">
+                Quantity
+            </label>
+
+            <input
+                type="number"
+                id="quantity"
+                value="1"
+                min="1"
+            >
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn cart-btn"
+            onclick="addToCart()"
+        >
+            Add to Cart
+        </button>
+
+
+        <a
+            href="{% url 'cart' %}"
+            class="btn view-cart-btn"
+        >
+            View Cart 🛒
+        </a>
+
+
+        <div class="description">
+            {{ product.description }}
+        </div>
+
+
+        <div class="product-notes">
+
+            <div class="note">
+
+                <strong>
+                    Size Guide
+                </strong>
+
+                <p>
+                    Please check the AMLO size guide before sending your enquiry.
+                </p>
+<a
+    href="{% url 'size_guide' %}"
+    class="size-guide-btn"
+>
+    📏 View Size Guide
+</a>
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    WhatsApp Ordering
+                </strong>
+
+                <p>
+                    Add your selected shoes to your cart and send your
+                    full enquiry directly to AMLO through WhatsApp.
+                </p>
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>
+                    Availability
+                </strong>
+
+                <p>
+                    Stock, delivery and final payment details are
+                    confirmed directly with AMLO.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{% url 'home' %}#shop"
+            class="back-link"
+        >
+            ← Continue Shopping
+        </a>
+
+    </section>
+
+</main>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+    function changeImage(imageUrl) {
+        const mainImage =
+            document.getElementById('mainProductImage');
+
+        if (mainImage) {
+            mainImage.src = imageUrl;
+        }
+    }
+
+
+    function addToCart() {
+
+        const size =
+            document.getElementById('size').value;
+
+        const colour =
+            document.getElementById('colour').value;
+
+        const quantity = parseInt(
+            document.getElementById('quantity').value
+        );
+
+
+        if (!size) {
+            alert('Please select a shoe size.');
+            return;
+        }
+
+
+        if (!colour) {
+            alert('Please select a colour.');
+            return;
+        }
+
+
+        if (!quantity || quantity < 1) {
+            alert('Quantity must be at least 1.');
+            return;
+        }
+
+
+        const product = {
+            id: "{{ product.id }}",
+            name: "{{ product.name|escapejs }}",
+            price: parseFloat("{{ product.price }}"),
+            size: size,
+            colour: colour,
+            quantity: quantity
+        };
+
+
+        let cart = JSON.parse(
+            localStorage.getItem('amloCart')
+        ) || [];
+
+
+        const existingItem = cart.find(item =>
+            item.id === product.id &&
+            item.size === product.size &&
+            item.colour === product.colour
+        );
+
+
+        if (existingItem) {
+            existingItem.quantity += product.quantity;
+        } else {
+            cart.push(product);
+        }
+
+
+        localStorage.setItem(
+            'amloCart',
+            JSON.stringify(cart)
+        );
+
+
+        alert(
+            `${product.name} has been added to your cart.`
+        );
+    }
+
+</script>
+
+{% endblock %}
