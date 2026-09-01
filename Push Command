@@ -1,0 +1,7 @@
+echo "# Amlo-Shoe-website" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Chauke12345/Amlo-Shoe-website.git
+git push -u origin main
