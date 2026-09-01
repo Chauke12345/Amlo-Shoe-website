@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Product, Category
+from django.shortcuts import render
 
 def home(request):
     products = Product.objects.filter(
@@ -74,4 +75,7 @@ def size_guide(request):
     return render(request, 'shop/size_guide.html')
 def contact(request):
     return render(request, 'shop/contact.html')
+
+def robots_txt(request):
+    return render(request, "robots.txt", content_type="text/plain")
 

@@ -18,10 +18,19 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.views.static import serve
+from django.contrib.sitemaps.views import sitemap
+from shop.sitemaps import ProductSitemap
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls')),
+
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': {'products': ProductSitemap}},
+        name='django.contrib.sitemaps.views.sitemap',
+    ),
 
     # Serve uploaded product/category images from Railway volume
     re_path(
