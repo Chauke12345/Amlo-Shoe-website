@@ -11,3 +11,6 @@ media/
 .idea/
 .DS_Store
 Thumbs.db
+
+data.json
+shop_data.json
