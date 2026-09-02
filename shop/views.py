@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Product, Category
 from django.shortcuts import render
+from django.core.paginator import Paginator
 
 def home(request):
     products = Product.objects.filter(
@@ -52,16 +53,25 @@ def cart(request):
     )
 
 
+from django.core.paginator import Paginator
+
+
 def category_products(request, slug):
     category = get_object_or_404(
         Category,
         slug=slug
     )
 
-    products = Product.objects.filter(
+    products_list = Product.objects.filter(
         category=category,
         available=True
     ).order_by('-created_at')
+
+    paginator = Paginator(products_list, 12)
+
+    page_number = request.GET.get('page')
+
+    products = paginator.get_page(page_number)
 
     return render(
         request,
@@ -71,11 +81,18 @@ def category_products(request, slug):
             'products': products
         }
     )
+
 def size_guide(request):
     return render(request, 'shop/size_guide.html')
+
+
 def contact(request):
     return render(request, 'shop/contact.html')
 
-def robots_txt(request):
-    return render(request, "robots.txt", content_type="text/plain")
 
+def robots_txt(request):
+    return render(
+        request,
+        "robots.txt",
+        content_type="text/plain"
+    )
